@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js'
 import { APIError } from "@/util/APIError";
 import Image from "next/image";
 
-export default async function Page({ params }: ProductProps) {
+export default async function Page({params}: {params: string}) {
     // initialize supabase client
     const supabaseUrl = 'https://zsosigjojmuorshavobx.supabase.co';
     const supabaseKey = process.env.SUPABASE_KEY;
@@ -13,17 +13,18 @@ export default async function Page({ params }: ProductProps) {
     const productInfo: Product = await getProductInformation();
 
     async function getProductInformation(): Promise<Product> {
-        let { data, error } = await supabase
-          .from('product')
-          .select()
+        console.log("id:" + params)
+        let { data: product, error } = await supabase
+          .from('products')
+          .select('*')
           .eq('id', params)
         if ( error ) {
             throw error
         }
-        if ( !data || data.length == 0 ) {
+        if ( !product || product.length == 0 ) {
             throw new Error(APIError.NO_DATA)
         }
-        return data[0] as Product
+        return product[0] as Product
     }
 
     return (

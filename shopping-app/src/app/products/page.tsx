@@ -13,15 +13,12 @@ export default async function Page() {
         const products: [Product] = await getProducts();
 
         async function getProducts(): Promise<[Product]> {
-            console.log(process.env.SUPABASE_KEY)
             let { data: products, error } = await supabase
-            .from('product')
+            .from('products')
             .select('*')
             if ( error ) {
                 throw error
             }
-            console.log(products)
-            console.log(products?.length)
             if ( !products || products.length == 0 ) {
                 throw new Error(APIError.NO_DATA)
             }
