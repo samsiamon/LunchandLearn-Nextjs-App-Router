@@ -1,6 +1,7 @@
-import Product, { ProductProps } from "./Product"
+import Product, { ProductProps } from "../../../util/Product"
 import { createClient } from '@supabase/supabase-js'
-import { APIError } from "@/app/APIError";
+import { APIError } from "@/util/APIError";
+import Image from "next/image";
 
 export default async function Page({ params }: ProductProps) {
     // initialize supabase client
@@ -27,7 +28,10 @@ export default async function Page({ params }: ProductProps) {
 
     return (
     <div className="container mx-auto">
-        
+        <h2>{productInfo.name}</h2>
+        <Image title={productInfo.name} src={productInfo.image} alt={productInfo.name} />
+        <h3>{productInfo.price}</h3>
+        <p>{productInfo.description}</p>
     </div>
     )
 }

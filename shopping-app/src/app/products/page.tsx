@@ -1,1 +1,38 @@
-SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpzb3NpZ2pvam11b3JzaGF2b2J4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODMyNTQyNDMsImV4cCI6MTk5ODgzMDI0M30.PuGGCLVaKIE9x9rV7OoZLTmXPyhwEOZnhTLhdYePJu4
+import { createClient } from "@supabase/supabase-js";
+import { APIError } from "../../util/APIError";
+import Product, { exampleProduct } from "../../util/Product";
+import ProductCard from "@/components/ProductCard";
+
+export default async function Page() {
+        // initialize supabase client
+        const supabaseUrl = "https://zsosigjojmuorshavobx.supabase.co";
+        const supabaseKey = process.env.SUPABASE_KEY;
+        const supabase = createClient(supabaseUrl, supabaseKey ?? "");
+
+        // initialize data
+        const products: [Product] = await getProducts();
+
+        async function getProducts(): Promise<[Product]> {
+            console.log(process.env.SUPABASE_KEY)
+            let { data: products, error } = await supabase
+            .from('product')
+            .select('*')
+            if ( error ) {
+                throw error
+            }
+            console.log(products)
+            console.log(products?.length)
+            if ( !products || products.length == 0 ) {
+                throw new Error(APIError.NO_DATA)
+            }
+            return products as [Product];
+        }
+
+        return (
+            <div>
+                {products.map((product) => {
+                        return ProductCard(product)
+                    })}
+            </div>
+        )
+}
